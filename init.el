@@ -1,3 +1,4 @@
+(server-start)
 (require 'cl)
 
 ;; Inits 'package
@@ -16,6 +17,36 @@
 
 ;; Sets up misc configurations
 (setq org-notes-home-dir "~/Dropbox/Koala/orgnotes/")
+
+(setq org-capture-templates
+      '(("i" "Adicionar nota à Caixa de idéias" entry (file+headline "~/Dropbox/Koala/orgnotes/caderno.org.gpg" "Caixa de idéias")
+         "* %?\n%T\n" :prepend t)
+        ("n" "Adicionar nota ao Caderno de notas avulsas" entry (file+headline "~/Dropbox/Koala/orgnotes/caderno.org.gpg" "Caderno de notas avulsas")
+         "* %?\n%T\n" :prepend t)
+         ("t" "Adicionar tarefa" entry (file+headline "~/Dropbox/Koala/orgnotes/caderno.org.gpg" "Tarefas")
+         "* TODO %?\n" :prepend t)))
+
+(org-babel-do-load-languages 'org-babel-load-languages
+                             '((shell . t)))
+
+;; Org export: removes brackets from a timestamp
+(defun org-time-string-format (string-time format-string)
+  (format-time-string  format-string (org-time-string-to-time string-time)))
+
+(defun remove-brackets (string)
+  (replace-regexp-in-string "[<>]\\|[][]" "" string))
+
+(defun org-export-filter-timestamp-remove-brackets (time-string backend info)
+  "removes relevant brackets from a timestamp"
+  (let ((ts (org-time-string-format time-string "%d de %B de %Y")))
+    (cond
+     ((org-export-derived-backend-p backend 'latex)
+      (remove-brackets ts)))))
+
+(eval-after-load 'ox '(add-to-list
+                       'org-export-filter-timestamp-functions
+                       'org-export-filter-timestamp-remove-brackets))
+
 (setq-default ispell-dictionary "american")
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
@@ -39,6 +70,10 @@
 (global-hl-line-mode t)
 (blink-cursor-mode 0)
 
+
+;; Global keybindings
+(global-set-key (kbd "M-q") 'set-justification-full)
+
 (set-face-attribute 'default nil
                     :family "Inconsolata"
                     :height 150
@@ -48,6 +83,13 @@
 (add-hook 'prog-mode-hook (lambda ()
                             'whitespace-mode
                             'flyspell-mode))
+
+(add-hook 'org-mode-hook (lambda ()
+                           (auto-fill-mode)
+                           (org-indent-mode)))
+
+(add-hook 'org-capture-prepare-finalize-hook 'org-id-get-create)
+
 
 ;; A big contributor to startup times is garbage collection. We up the gc
 ;; threshold to temporarily prevent it from running, then reset it later by
@@ -73,19 +115,11 @@
   (interactive)
   (helm-find-in-dir "~/workspace/"))
 
-;; Changes evil cursor behavior to be integrated with dvorak layout
-;; qwerty -> dvorak
-;; j -> h
-;; h -> d
-;; k -> t
-;; l -> n
-(defun dvorak-configurations ()
-  "My helpful evil-dvorak customizations"
-  (interactive)
-  ;;normal mode customizations
-  (evil-define-key 'normal evil-dvorak-mode-map
-    (kbd "j") 'evil-next-line
-    (kbd "k") 'evil-previous-line))
+(defun evil-collection-vterm-escape-stay ()
+  "Go back to normal state but don't move cursor backwards.
+Moving cursor backwards is the default vim behavior but
+it is not appropriate in some cases like terminals."
+  (setq-local evil-move-cursor-back nil))
 
 ;; Installs and configures new packages
 (require 'recentf)
@@ -106,6 +140,13 @@
   (when (memq window-system '(mac ns x))
   (exec-path-from-shell-initialize)))
 
+(use-package vterm
+  :ensure t
+  :after evil
+  :config
+	(evil-define-key 'insert vterm-mode-map (kbd "C-y")      #'vterm-yank)
+  (add-hook 'vterm-mode-hook #'evil-collection-vterm-escape-stay))
+
 (use-package go-mode
   :ensure t)
 
@@ -123,12 +164,6 @@
 (use-package lsp-treemacs
   :ensure t
   :commands lsp-treemacs-errors-list)
-
-(use-package which-key
-  :ensure t
-  :diminish
-  :config
-  (which-key-mode))
 
 (use-package helm-lsp
   :ensure t
@@ -157,9 +192,7 @@
   (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
 
 (use-package ace-jump-mode
-  :ensure t
-  :config
-  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode))
+  :ensure t)
 
 (use-package web-mode
   :ensure t
@@ -205,37 +238,33 @@
   (define-key evil-motion-state-map "H" 'beginning-of-line-text)
   (define-key evil-motion-state-map "L" 'evil-end-of-line))
 
-;; (use-package evil-dvorak
-;;   :diminish
-;;   :config
-;;   (global-evil-dvorak-mode 1)
-;;   (dvorak-configurations))
-
 (use-package evil-leader
   :init (global-evil-leader-mode)
   :after evil
   :diminish
   :config
   (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key ":" 'helm-M-x)
   (evil-leader/set-key
-    "f f" 'helm-find-files
-    "f o" 'helm-find-my-notes
-    "f w" 'helm-find-my-workspace
-    "f p" 'projectile-switch-project
-    "f r" 'helm-recentf
-    "g c" 'ace-jump-char-mode
-    "g w" 'ace-jump-word-mode
-    "g o" 'helm-occur
-    "b"   'helm-buffers-list
-    "m"   'magit-status
-    "o"   'other-frame
-    "/"   'helm-projectile-ag
-    "t"   'vterm
-    "d"   'treemacs
-    "f s" 'toggle-frame-fullscreen
-    "s v" 'split-window-horizontally
-    "s h" 'split-window-vertically))
+    ":"     'helm-M-x
+    "<SPC>" 'helm-M-x
+    "f f"   'helm-find-files
+    "f o"   'helm-find-my-notes
+    "f w"   'helm-find-my-workspace
+    "f r"   'helm-recentf
+    "g c"   'ace-jump-char-mode
+    "g w"   'ace-jump-word-mode
+    "g o"   'helm-occur
+    "b"     'helm-buffers-list
+    "m"     'magit-status
+    "x o"   'other-window
+    "/"     'helm-projectile-ag
+    "t"     'vterm
+    "d"     'treemacs
+    "o c"   'org-capture
+    "o f"   'helm-find-my-notes
+    "f s"   'toggle-frame-fullscreen
+    "s v"   'split-window-horizontally
+    "s h"   'split-window-vertically))
 
 (use-package key-chord
   :after evil
@@ -294,13 +323,6 @@
     (helm-projectile-on)))
 
 ;; Org mode
-(org-babel-do-load-languages 'org-babel-load-languages
-    '((shell . t)))
-
-(add-hook 'org-mode-hook (lambda ()
-                           (auto-fill-mode)
-                           (org-indent-mode)))
-
 (use-package org-download
   :ensure t
   :config
