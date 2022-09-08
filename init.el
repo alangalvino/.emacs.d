@@ -1,12 +1,12 @@
-(require 'cl)
+(server-start)
 
-;; Inits 'package
+;; Package
 (require 'package)
 (setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-; Bootstraps 'use-package
+;; Use-package 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -14,8 +14,7 @@
 (eval-when-compile
   (require 'use-package))
 
-;; Sets up misc configurations
-(setq org-notes-home-dir "~/Dropbox/Koala/orgnotes/")
+;; Aesthetic
 (setq-default ispell-dictionary "american")
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 2)
@@ -44,136 +43,69 @@
                     :height 150
                     :weight 'normal)
 
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'prog-mode-hook (lambda ()
-                            'whitespace-mode
-                            'flyspell-mode))
 
-;; A big contributor to startup times is garbage collection. We up the gc
-;; threshold to temporarily prevent it from running, then reset it later by
-;; enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
-(setq gc-cons-threshold most-positive-fixnum)
+;; Global keybindings
+(global-set-key (kbd "M-q") 'set-justification-full)
+(global-set-key (kbd "C-x _") 'split-window-horizontally)
+(global-set-key (kbd "C-x -") 'split-window-horizontally)
+(global-set-key (kbd "C-x |") 'split-window-vertically)
 
-;; In noninteractive sessions, prioritize non-byte-compiled source files to
-;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
-;; to skip the mtime checks on every *.elc file.
-(setq load-prefer-newer noninteractive)
+;; Load Quicklisp
+(load (expand-file-name "~/.quicklisp/slime-helper.el"))
+(setq inferior-lisp-program "sbcl")
 
-;; My Functions
+(setq ql:*local-project-directories* '("~/workspace/common-lisp/"))
 
-(defun helm-find-in-dir (dir)
-  (let ((default-directory dir))
-    (helm-find-files nil)))
+;; Config & Hotfixes
+;; Fixes orgmode TAB functionality (see https://stackoverflow.com/questions/22878668/emacs-org-mode-evil-mode-tab-key-not-working)
+(setq evil-want-C-i-jump nil)
 
-(defun helm-find-my-notes ()
-  (interactive)
-  (helm-find-in-dir org-notes-home-dir))
+(setq inferior-lisp-program "/usr/bin/sbcl")
 
-(defun helm-find-my-workspace ()
-  (interactive)
-  (helm-find-in-dir "~/workspace/"))
-
-;; Changes evil cursor behavior to be integrated with dvorak layout
-;; qwerty -> dvorak
-;; j -> h
-;; h -> d
-;; k -> t
-;; l -> n
-(defun dvorak-configurations ()
-  "My helpful evil-dvorak customizations"
-  (interactive)
-  ;;normal mode customizations
-  (evil-define-key 'normal evil-dvorak-mode-map
-    (kbd "j") 'evil-next-line
-    (kbd "k") 'evil-previous-line))
-
-;; Installs and configures new packages
-(require 'recentf)
-(recentf-mode 1)
-(setq recentf-max-menu-items 25)
-
-(use-package diminish
+;; Packages
+(use-package evil
   :ensure t
-  :config
-  (diminish 'undo-tree-mode)
-  (diminish 'eldoc-mode)
-  (diminish 'auto-fill-mode)
-  (diminish 'org-indent-mode))
-
-(use-package exec-path-from-shell
-  :ensure t
-  :config
-  (when (memq window-system '(mac ns x))
-  (exec-path-from-shell-initialize)))
-
-(use-package go-mode
-  :ensure t)
-
-(use-package lsp-mode
-  :ensure t
-  :commands lsp
-  :hook
-  ((go-mode .lsp)))
-
-(use-package lsp-ui
-  :ensure t
-  :commands lsp-ui-mode
-  :init)
-
-(use-package lsp-treemacs
-  :ensure t
-  :commands lsp-treemacs-errors-list)
-
-(use-package which-key
-  :ensure t
-  :diminish
-  :config
-  (which-key-mode))
-
-(use-package helm-lsp
-  :ensure t
-  :commands helm-lsp-workspace-symbol)
-
-;; Use the Debug Adapter Protocol for running tests and debugging
-(use-package company
-  :ensure t
-  :diminish
-  :config
-  (add-hook 'after-init-hook 'global-company-mode))
-
-(use-package company-lsp
-  :ensure t)
-
-(use-package treemacs
-  :ensure t)
-
-(use-package treemacs-evil
-  :ensure t)
-
-(use-package flymake-shellcheck
-  :ensure t
-  :commands flymake-shellcheck-load
   :init
-  (add-hook 'sh-mode-hook 'flymake-shellcheck-load))
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-mode t)
+  (define-key evil-motion-state-map "H" 'beginning-of-line-text)
+  (define-key evil-motion-state-map "L" 'evil-end-of-line))
 
-(use-package ace-jump-mode
+(use-package evil-leader
+  :init
+  (global-evil-leader-mode)
+  :after evil
+  :diminish
+  :config
+  (evil-leader/set-leader "<SPC>")
+  (evil-leader/set-key
+    ":"     'helm-M-x
+    "<SPC>" 'helm-M-x
+    "f f"   'helm-find-files
+    "f o"   'helm-find-my-notes
+    "f w"   'helm-find-my-workspace
+    "f r"   'helm-recentf
+    "g c"   'ace-jump-char-mode
+    "g w"   'ace-jump-word-mode
+    "g o"   'helm-occur
+    "b"     'helm-buffers-list
+    "m"     'magit-status
+    "x o"   'other-window
+    "/"     'helm-projectile-ag
+    "t"     'vterm-toggle
+    "d"     'treemacs
+    "o c"   'org-capture
+    "o f"   'helm-find-my-notes
+    "s l"   'slime
+    "f s"   'toggle-frame-fullscreen
+    "s v"   'split-window-horizontally
+    "s h"   'split-window-vertically))
+
+(use-package evil-surround
   :ensure t
   :config
-  (define-key global-map (kbd "C-c SPC") 'ace-jump-mode))
-
-(use-package web-mode
-  :ensure t
-  :config
-  (progn
-    (add-to-list 'auto-mode-alist '("\\.phtml\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.tpl\\.php\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.[agj]sp\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.as[cp]x\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.erb\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.mustache\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.djhtml\\'" . web-mode))
-    (add-to-list 'auto-mode-alist '("\\.hbs\\'" . web-mode))
-    (setq web-mode-markup-indent-offset 2)))
+  (global-evil-surround-mode 1))
 
 (use-package helm
   :config
@@ -195,81 +127,6 @@
   (define-key helm-map (kbd "C-j") 'helm-next-line)
   (define-key helm-map (kbd "C-k") 'helm-previous-line))
 
-(use-package helm-ag
-  :ensure t)
-
-(use-package evil
-  :init (evil-mode t)
-  :diminish
-  :config
-  (define-key evil-motion-state-map "H" 'beginning-of-line-text)
-  (define-key evil-motion-state-map "L" 'evil-end-of-line))
-
-;; (use-package evil-dvorak
-;;   :diminish
-;;   :config
-;;   (global-evil-dvorak-mode 1)
-;;   (dvorak-configurations))
-
-(use-package evil-leader
-  :init (global-evil-leader-mode)
-  :after evil
-  :diminish
-  :config
-  (evil-leader/set-leader "<SPC>")
-  (evil-leader/set-key ":" 'helm-M-x)
-  (evil-leader/set-key
-    "f f" 'helm-find-files
-    "f o" 'helm-find-my-notes
-    "f w" 'helm-find-my-workspace
-    "f p" 'projectile-switch-project
-    "f r" 'helm-recentf
-    "g c" 'ace-jump-char-mode
-    "g w" 'ace-jump-word-mode
-    "g o" 'helm-occur
-    "b"   'helm-buffers-list
-    "m"   'magit-status
-    "o"   'other-frame
-    "/"   'helm-projectile-ag
-    "t"   'vterm
-    "d"   'treemacs
-    "f s" 'toggle-frame-fullscreen
-    "s v" 'split-window-horizontally
-    "s h" 'split-window-vertically))
-
-(use-package key-chord
-  :after evil
-  :config
-  (key-chord-mode 1)
-  (key-chord-define evil-insert-state-map "hh" 'evil-normal-state))
-
-(use-package evil-surround
-  :ensure t
-  :config
-  :after evil
-  :config
-  (global-evil-surround-mode t))
-
-(use-package magit
-  :ensure t)
-
-(use-package evil-magit
-  :after evil
-  :ensure t)
-
-(use-package paredit
-  :ensure t
-  :diminish
-  :config
-  (add-hook 'emacs-lisp-mode-hook 'paredit-mode)
-  (add-hook 'clojure-mode-hook 'paredit-mode))
-
-(use-package markdown-mode
-  :ensure t
-  :config
-  (set-face-attribute 'markdown-code-face nil :background nil)
-  (add-hook 'markdown-mode 'auto-fill-mode))
-
 (use-package solarized-theme
   :ensure t
   :config
@@ -277,34 +134,8 @@
   (setq solarized-scale-org-headlines nil)
   (load-theme 'solarized-dark t))
 
-(use-package projectile
-  :ensure t
-  :diminish
-  :init
-  (setq projectile-completion-system 'helm)
-  :config
-  (projectile-global-mode))
-
-(use-package helm-projectile
-  :ensure t
-  :init
-  (setq helm-projectile-fuzzy-match t)
-  :config
-  (progn
-    (helm-projectile-on)))
-
-;; Org mode
-(org-babel-do-load-languages 'org-babel-load-languages
-    '((shell . t)))
-
-(add-hook 'org-mode-hook (lambda ()
-                           (auto-fill-mode)
-                           (org-indent-mode)))
-
-(use-package org-download
-  :ensure t
-  :config
-  (setq-default org-download-image-dir (concat org-notes-home-dir "pictures")))
+(use-package magit
+  :ensure t)
 
 (use-package org-bullets
   :config
@@ -312,20 +143,45 @@
   (add-hook 'org-mode-hook (lambda()
                              (org-bullets-mode 1))))
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   (quote
-    ("2809bcb77ad21312897b541134981282dc455ccd7c14d74cc333b6e549b824f3" default)))
- '(package-selected-packages
-   (quote
-    (flymake-shellcheck diminish zenburn-theme which-key web-mode vterm use-package treemacs-evil solarized-theme slime request paredit org-download org-bullets neotree lsp-ui lsp-treemacs key-chord helm-projectile helm-org helm-lsp helm-ag go-mode exec-path-from-shell evil-surround evil-org evil-magit evil-lispy evil-leader company-lsp clojure-mode ace-jump-mode))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Orgmode
+(setq org-startup-folded t)
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages '((lisp . t)))
+
+(add-hook 'org-mode-hook (lambda ()
+                           (org-toggle-pretty-entities)
+                           (auto-fill-mode)
+                           (org-indent-mode)))
+
+(setq org-notes-home-dir "~/Dropbox/Personal/orgnotes/")
+
+(setq org-capture-templates
+      '(("i" "Adicionar nota à Caixa de idéias" entry (file+headline "~/Dropbox/Personal/orgnotes/caderno.org.gpg" "Caixa de idéias")
+         "* %?\n%T\n" :prepend t)
+        ("n" "Adicionar nota ao Caderno de notas avulsas" entry (file+headline "~/Dropbox/Personal/orgnotes/caderno.org.gpg" "Caderno de notas avulsas")
+         "* %?\n%T\n" :prepend t)
+        ("r" "Random note" entry (file+headline "~/Dropbox/Personal/orgnotes/cto.org.gpg" "Notes") "* %?\n%T\n" :prepend t)
+        ("t" "Add a To-do item" entry (file+headline "~/Dropbox/Personal/orgnotes/cto.org.gpg" "To-do")
+         "* TODO %?\n%T\n")))
+
+;; Functions
+(defun pgformatter-on-region ()
+  "A function to invoke pgFormatter as an external program."
+  (interactive)
+  (let ((b (if mark-active (min (point) (mark)) (point-min)))
+        (e (if mark-active (max (point) (mark)) (point-max)))
+        (pgfrm "/usr/bin/pg_format" ) )
+    (shell-command-on-region b e pgfrm (current-buffer) 1)))
+
+(defun helm-find-in-dir (dir)
+  (let ((default-directory dir))
+    (helm-find-files nil)))
+
+(defun helm-find-my-notes ()
+  (interactive)
+  (helm-find-in-dir org-notes-home-dir))
+
+(defun helm-find-my-workspace ()
+  (interactive)
+  (helm-find-in-dir "~/workspace/"))
