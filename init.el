@@ -40,9 +40,8 @@
 
 (set-face-attribute 'default nil
                     :family "Inconsolata"
-                    :height 150
+                    :height 200
                     :weight 'normal)
-
 
 ;; Global keybindings
 (global-set-key (kbd "M-q") 'set-justification-full)
@@ -51,16 +50,17 @@
 (global-set-key (kbd "C-x |") 'split-window-vertically)
 
 ;; Load Quicklisp
-(load (expand-file-name "~/.quicklisp/slime-helper.el"))
-(setq inferior-lisp-program "sbcl")
+(if (file-exists-p "~/.quicklisp/slime-helper.el") 
+    (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
-(setq ql:*local-project-directories* '("~/workspace/common-lisp/"))
+;; Load Slime helpers
+(if (file-exists-p "~/.roswell/helper.el") 
+    (load (expand-file-name "~/.roswell/helper.el"))
+  (setq inferior-lisp-program "/usr/local/bin/ros -L sbcl -Q -l ~/.sbclrc run"))
 
 ;; Config & Hotfixes
 ;; Fixes orgmode TAB functionality (see https://stackoverflow.com/questions/22878668/emacs-org-mode-evil-mode-tab-key-not-working)
 (setq evil-want-C-i-jump nil)
-
-(setq inferior-lisp-program "/usr/bin/sbcl")
 
 ;; Packages
 (use-package evil
@@ -70,7 +70,8 @@
   :config
   (evil-mode t)
   (define-key evil-motion-state-map "H" 'beginning-of-line-text)
-  (define-key evil-motion-state-map "L" 'evil-end-of-line))
+  (define-key evil-motion-state-map "L" 'evil-end-of-line)
+  (define-key evil-normal-state-map (kbd "M-.") 'slime-edit-definition))
 
 (use-package evil-leader
   :init
@@ -101,6 +102,12 @@
     "f s"   'toggle-frame-fullscreen
     "s v"   'split-window-horizontally
     "s h"   'split-window-vertically))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
 
 (use-package evil-surround
   :ensure t
@@ -136,6 +143,27 @@
 
 (use-package magit
   :ensure t)
+
+(use-package paredit
+  :ensure t
+  :config
+  (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
+  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
+  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
+  (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
+
+(use-package aggressive-indent
+  :ensure t
+  :config
+  (add-hook 'emacs-lisp-mode-hook       #'aggressive-indent-mode)
+  (add-hook 'eval-expression-minibuffer-setup-hook #'aggressive-indent-mode)
+  (add-hook 'ielm-mode-hook             #'aggressive-indent-mode)
+  (add-hook 'lisp-mode-hook             #'aggressive-indent-mode)
+  (add-hook 'lisp-interaction-mode-hook #'aggressive-indent-mode)
+  (add-hook 'scheme-mode-hook           #'aggressive-indent-mode))
 
 (use-package org-bullets
   :config
@@ -185,3 +213,35 @@
 (defun helm-find-my-workspace ()
   (interactive)
   (helm-find-in-dir "~/workspace/"))
+
+;; macOS specific configs
+
+;; Enables non native fullscreen
+(setq ns-use-native-fullscreen nil)
+
+;; Macs OS Command as Meta Key
+(setq mac-command-modifier 'meta)
+(setq mac-option-modifier 'control)
+
+;; Open just one frame
+(setq ns-pop-up-frames nil)
+
+;; Don't pass command to Mac OS, ex.: Cmd + h would not hide emacs
+(setq mac-pass-command-to-system nil)
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes
+   '("fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" default))
+ '(helm-minibuffer-history-key "M-p")
+ '(package-selected-packages
+   '(aggressive-indent-mode aggresive-indent-mode evil-collection evil-smartparens aggressive-indent paredit treemacs org-bullets helm evil-leader magit solarized-theme evil-surround evil use-package)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
