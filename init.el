@@ -2,8 +2,7 @@
 
 ;; Package
 (require 'package)
-(setq package-enable-at-startup nil)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
 
 ;; Use-package 
@@ -74,34 +73,34 @@
   (define-key evil-normal-state-map (kbd "M-.") 'slime-edit-definition))
 
 (use-package evil-leader
-  :init
-  (global-evil-leader-mode)
+  :ensure t
   :after evil
   :diminish
   :config
+  (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
-    ":"     'helm-M-x
-    "<SPC>" 'helm-M-x
-    "f f"   'helm-find-files
-    "f o"   'helm-find-my-notes
-    "f w"   'helm-find-my-workspace
-    "f r"   'helm-recentf
-    "g c"   'ace-jump-char-mode
-    "g w"   'ace-jump-word-mode
-    "g o"   'helm-occur
-    "b"     'helm-buffers-list
-    "m"     'magit-status
-    "x o"   'other-window
-    "/"     'helm-projectile-ag
-    "t"     'vterm-toggle
-    "d"     'treemacs
-    "o c"   'org-capture
-    "o f"   'helm-find-my-notes
-    "s l"   'slime
-    "f s"   'toggle-frame-fullscreen
-    "s v"   'split-window-horizontally
-    "s h"   'split-window-vertically))
+   ":"     'helm-M-x
+   "<SPC>" 'helm-M-x
+   "f f"   'helm-find-files
+   "f o"   'helm-find-my-notes
+   "f w"   'helm-find-my-workspace
+   "f r"   'helm-recentf
+   "g c"   'ace-jump-char-mode
+   "g w"   'ace-jump-word-mode
+   "g o"   'helm-occur
+   "b"     'helm-buffers-list
+   "m"     'magit-status
+   "x o"   'other-window
+   "/"     'helm-projectile-ag
+   "t"     'vterm-toggle
+   "d"     'treemacs
+   "o c"   'org-capture
+   "o f"   'helm-find-my-notes
+   "s l"   'slime
+   "f s"   'toggle-frame-fullscreen
+   "s v"   'split-window-horizontally
+   "s h"   'split-window-vertically))
 
 (use-package evil-collection
   :after evil
@@ -115,6 +114,7 @@
   (global-evil-surround-mode 1))
 
 (use-package helm
+  :ensure t
   :config
   (require 'helm-config)
   (setq helm-split-window-in-side-p t)
@@ -166,10 +166,14 @@
   (add-hook 'scheme-mode-hook           #'aggressive-indent-mode))
 
 (use-package org-bullets
+  :ensure t
   :config
   (setq org-hide-emphasis-markers t)
   (add-hook 'org-mode-hook (lambda()
                              (org-bullets-mode 1))))
+
+(use-package treemacs 
+  :ensure t)
 
 ;; Orgmode
 (setq org-startup-folded t)
@@ -229,19 +233,6 @@
 ;; Don't pass command to Mac OS, ex.: Cmd + h would not hide emacs
 (setq mac-pass-command-to-system nil)
 
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("fee7287586b17efbfda432f05539b58e86e059e78006ce9237b8732fde991b4c" "4c56af497ddf0e30f65a7232a8ee21b3d62a8c332c6b268c81e9ea99b11da0d3" default))
- '(helm-minibuffer-history-key "M-p")
- '(package-selected-packages
-   '(aggressive-indent-mode aggresive-indent-mode evil-collection evil-smartparens aggressive-indent paredit treemacs org-bullets helm evil-leader magit solarized-theme evil-surround evil use-package)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+;; Setup custom file
+(setq custom-file (concat user-emacs-directory "custom.el"))
+(load custom-file 'noerror)
