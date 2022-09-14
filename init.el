@@ -53,9 +53,10 @@
     (load (expand-file-name "~/.quicklisp/slime-helper.el")))
 
 ;; Load Slime helpers
-(if (file-exists-p "~/.roswell/helper.el") 
-    (load (expand-file-name "~/.roswell/helper.el"))
-  (setq inferior-lisp-program "/usr/local/bin/ros -L sbcl -Q -l ~/.sbclrc run"))
+(if (file-exists-p "~/.roswell/helper.el")
+    (progn
+      (load (expand-file-name "~/.roswell/helper.el"))
+      (setq inferior-lisp-program "/usr/local/bin/ros -L sbcl -Q -l ~/.sbclrc run")))
 
 ;; Config & Hotfixes
 ;; Fixes orgmode TAB functionality (see https://stackoverflow.com/questions/22878668/emacs-org-mode-evil-mode-tab-key-not-working)
