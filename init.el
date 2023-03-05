@@ -246,7 +246,7 @@
 
 ;; Macs OS Command as Meta Key
 (setq mac-command-modifier 'meta)
-(setq mac-option-modifier 'control)
+(setq mac-option-modifier 'option)
 
 ;; Open just one frame
 (setq ns-pop-up-frames nil)
@@ -257,3 +257,6 @@
 ;; Setup custom file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
+
+;; Autoreload file from disk
+(global-auto-revert-mode t)
