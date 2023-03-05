@@ -239,24 +239,11 @@
   (interactive)
   (helm-find-in-dir "~/workspace/"))
 
-;; macOS specific configs
-
-;; Enables non native fullscreen
-(setq ns-use-native-fullscreen nil)
-
-;; Macs OS Command as Meta Key
-(setq mac-command-modifier 'meta)
-(setq mac-option-modifier 'option)
-
-;; Open just one frame
-(setq ns-pop-up-frames nil)
-
-;; Don't pass command to Mac OS, ex.: Cmd + h would not hide emacs
-(setq mac-pass-command-to-system nil)
-
 ;; Setup custom file
 (setq custom-file (concat user-emacs-directory "custom.el"))
 (load custom-file 'noerror)
+
+(if (eq system-type 'darwin) (load (concat user-emacs-directory "init-macos.el")))
 
 ;; Autoreload file from disk
 (global-auto-revert-mode t)
