@@ -2,6 +2,7 @@
 
 (use-package helm
   :ensure t
+  :delight
   :config
   (require 'helm-config)
   (setq helm-split-window-in-side-p t)

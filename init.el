@@ -1,9 +1,21 @@
 (server-start)
 
-;;; Load initfiles and use-package
+;;; Constants
 
-(setq initfiles-folder (concat user-emacs-directory "initfiles"))
-(setq load-path (cons initfiles-folder load-path))
+(defconst +linuxp+   (eq system-type 'gnu/linux))
+(defconst +osxp+     (eq system-type 'darwin))
+
+;;; User variables
+
+(defvar user-initfiles-directory      (expand-file-name "initfiles" user-emacs-directory))
+(defvar user-local-packages-directory (expand-file-name "local/packages"  user-emacs-directory))
+
+;;; Load initfiles, local-packages and use-package
+
+(setq load-path (cons user-initfiles-directory load-path))
+
+(let ((default-directory user-local-packages-directory))
+  (normal-top-level-add-subdirs-to-load-path))
 
 (require 'init-use-package)
 
@@ -44,6 +56,12 @@
   (setq solarized-scale-org-headlines nil)
   (load-theme 'solarized-dark t))
 
+(use-package lambda-themes
+  :ensure nil
+  :disabled
+  :config
+  (load-theme 'lambda-dark-faded t))
+
 (use-package magit
   :ensure t)
 
@@ -71,10 +89,12 @@
   (add-hook 'scheme-mode-hook           #'aggressive-indent-mode))
 
 (use-package treemacs 
-  :ensure t)
+  :ensure t
+  :delight)
 
 (use-package corfu
   :ensure t
+  :delight
   :custom
   (corfu-auto t)
   :init
@@ -85,7 +105,7 @@
 
 (use-package init-osx
   :ensure nil
-  :if (eq system-type 'darwin))
+  :if +osxp+)
 
 (use-package init-global-keybindings
   :ensure nil)
