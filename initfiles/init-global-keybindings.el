@@ -7,6 +7,8 @@
 (global-set-key (kbd "C-c f") 'helm-find-files)
 (global-set-key (kbd "C-c o") 'helm-find-my-notes)
 (global-set-key (kbd "C-c w") 'helm-find-my-workspace)
+(global-set-key (kbd "C-c e n") 'meow-normal-mode)
+(global-set-key (kbd "C-c e m") 'meow-motion-mode)
 (global-set-key (kbd "C-c d") 'treemacs)
 (global-set-key (kbd "C-c s") 'slime)
 (global-set-key (kbd "C-c g") 'magit-status)
