@@ -9,6 +9,9 @@
 
 ;;; Load packages using use-package
 
+(use-package init-helper-functions
+  :ensure nil)
+
 (use-package init-gui
   :ensure nil)
 

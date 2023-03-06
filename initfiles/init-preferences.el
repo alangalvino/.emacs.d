@@ -1,8 +1,16 @@
 ;;;; Personal configs
 
+;; allow 256MB of memory (instead of 0.76MB) before calling garbage collection
+(setq gc-cons-threshold (* 256 1024 1024))
+
 (setq-default ispell-dictionary "american")
+
+;; indentation cannot insert tabs
 (setq-default indent-tabs-mode nil)
+
+;; use 2 spaces instead of a tab
 (setq-default tab-width 2)
+
 (setq-default fill-column 100)
 (setq epa-pinentry-mode 'loopback)
 (setq ring-bell-function 'ignore)
