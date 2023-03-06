@@ -10,7 +10,6 @@
 (setq mac-command-modifier 'meta)
 (setq mac-option-modifier 'option)
 
-
 ;; Don't pass command to Mac OS, ex.: Cmd + h would not hide emacs
 (setq mac-pass-command-to-system nil)
 

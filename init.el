@@ -15,6 +15,9 @@
 (use-package init-preferences
   :ensure nil)
 
+(use-package delight 
+  :ensure t)
+
 (use-package init-meow
   :ensure nil)
 
@@ -43,17 +46,19 @@
 
 (use-package paredit
   :ensure t
-  :config
-  (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
-  (add-hook 'emacs-lisp-mode-hook       #'enable-paredit-mode)
-  (add-hook 'eval-expression-minibuffer-setup-hook #'enable-paredit-mode)
-  (add-hook 'ielm-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-mode-hook             #'enable-paredit-mode)
-  (add-hook 'lisp-interaction-mode-hook #'enable-paredit-mode)
-  (add-hook 'scheme-mode-hook           #'enable-paredit-mode))
+  :delight
+  :init
+  (progn
+    (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+    (add-hook 'emacs-lisp-mode-hook #'paredit-mode)
+    (add-hook 'lisp-mode-hook #'paredit-mode)
+    (add-hook 'scheme-mode-hook #'paredit-mode)
+    (add-hook 'ielm-mode-hook #'paredit-mode)
+    (add-hook 'clojure-mode-hook #'paredit-mode)))
 
 (use-package aggressive-indent
   :ensure t
+  :delight
   :config
   (add-hook 'emacs-lisp-mode-hook       #'aggressive-indent-mode)
   (add-hook 'eval-expression-minibuffer-setup-hook #'aggressive-indent-mode)
