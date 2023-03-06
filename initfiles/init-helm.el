@@ -4,7 +4,6 @@
   :ensure t
   :delight
   :config
-  (require 'helm-config)
   (setq helm-split-window-in-side-p t)
   (setq helm-recentf-fuzzy-match t)
   (setq helm-buffers-fuzzy-matching t)
