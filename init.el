@@ -73,6 +73,13 @@
 (use-package treemacs 
   :ensure t)
 
+(use-package corfu
+  :ensure t
+  :custom
+  (corfu-auto t)
+  :init
+  (global-corfu-mode))
+
 (use-package init-org-mode
   :ensure nil)
 
