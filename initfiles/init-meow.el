@@ -89,6 +89,7 @@
   (meow-global-mode 1)
   :config
   (meow-setup)
-  (setf meow-expand-hint-remove-delay 0))
+  (setf meow-expand-hint-remove-delay 0)
+  (setf meow-keypad-ctrl-meta-prefix nil))
 
 (provide 'init-meow)
