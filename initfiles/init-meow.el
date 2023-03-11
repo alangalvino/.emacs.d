@@ -172,6 +172,7 @@
   (meow-global-mode 1)
   :config
   (meow-dv-arrow-setup)
+  (setf meow-use-clipboard t)
   (setf meow-expand-hint-remove-delay 0)
   (setf meow-keypad-ctrl-meta-prefix nil))
 

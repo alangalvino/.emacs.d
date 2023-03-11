@@ -8,6 +8,7 @@
 ;;; User variables
 
 (defvar user-initfiles-directory      (expand-file-name "initfiles" user-emacs-directory))
+(defvar user-orgmode-dir             "~/Orgnotes/")
 (defvar user-local-packages-directory (expand-file-name "local/packages"  user-emacs-directory))
 
 ;;; Load initfiles, local-packages and use-package
@@ -92,13 +93,11 @@
   :ensure t
   :delight)
 
-(use-package corfu
+(use-package company
   :ensure t
   :delight
-  :custom
-  (corfu-auto t)
-  :init
-  (global-corfu-mode))
+  :config
+  (add-hook 'after-init-hook 'global-company-mode))
 
 (use-package init-org-mode
   :ensure nil)
@@ -109,4 +108,3 @@
 
 (use-package init-global-keybindings
   :ensure nil)
-

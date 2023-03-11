@@ -1,14 +1,17 @@
 ;;;; Personal configs
 
-;; allow 256MB of memory (instead of 0.76MB) before calling garbage collection
+;; Allow 256MB of memory (instead of 0.76MB) before calling garbage collection
 (setq gc-cons-threshold (* 256 1024 1024))
+
+;; Silence compiler warnings as they can be pretty disruptive
+(setq comp-async-report-warnings-errors nil)
 
 (setq-default ispell-dictionary "american")
 
-;; indentation cannot insert tabs
+;; Indentation cannot insert tabs
 (setq-default indent-tabs-mode nil)
 
-;; use 2 spaces instead of a tab
+;; Use 2 spaces instead of a tab
 (setq-default tab-width 2)
 
 (setq-default fill-column 100)
@@ -25,5 +28,8 @@
 
 ;; Autoreload file from disk
 (global-auto-revert-mode t)
+
+;; Revert Dired and other buffers
+(setq global-auto-revert-non-file-buffers t)
 
 (provide 'init-preferences)
