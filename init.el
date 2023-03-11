@@ -57,12 +57,6 @@
   (setq solarized-scale-org-headlines nil)
   (load-theme 'solarized-dark t))
 
-(use-package lambda-themes
-  :ensure nil
-  :disabled
-  :config
-  (load-theme 'lambda-dark-faded t))
-
 (use-package magit
   :ensure t)
 
@@ -98,6 +92,11 @@
   :delight
   :config
   (add-hook 'after-init-hook 'global-company-mode))
+
+(use-package darkroom
+  :commands darkroom-mode
+  :config
+  (setq darkroom-text-scale-increase 0))
 
 (use-package init-org-mode
   :ensure nil)
