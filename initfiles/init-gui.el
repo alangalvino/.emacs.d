@@ -11,6 +11,9 @@
 ;; Display the current time
 (display-time-mode 1)
 
+;; Smooth scrolling
+(pixel-scroll-precision-mode t)
+
 ;; Do not display toolbar 
 (tool-bar-mode -1)
 (menu-bar-mode -1)

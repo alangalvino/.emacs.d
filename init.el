@@ -1,5 +1,3 @@
-(server-start)
-
 ;;; Constants
 
 (defconst +linuxp+   (eq system-type 'gnu/linux))

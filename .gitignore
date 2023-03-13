@@ -7,5 +7,6 @@ projectile-bookmarks.eld
 recentf
 session*
 transient/
+eln-cache
 custom.el
-
+tramp

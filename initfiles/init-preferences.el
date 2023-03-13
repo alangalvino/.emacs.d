@@ -6,6 +6,9 @@
 ;; Silence compiler warnings as they can be pretty disruptive
 (setq comp-async-report-warnings-errors nil)
 
+;; Disable warnings
+(setq warning-minimum-level :emergency)
+
 (setq-default ispell-dictionary "american")
 
 ;; Indentation cannot insert tabs
@@ -31,5 +34,12 @@
 
 ;; Revert Dired and other buffers
 (setq global-auto-revert-non-file-buffers t)
+
+;; Start server after loading init file
+(add-hook 'after-init-hook
+          (lambda ()
+            (require 'server)
+            (unless (server-running-p)
+              (server-start))))
 
 (provide 'init-preferences)
