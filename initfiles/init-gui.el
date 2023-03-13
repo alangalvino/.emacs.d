@@ -8,6 +8,9 @@
 (setq initial-scratch-message "")
 (setq inhibit-startup-message t)
 
+(setq frame-title-format "emacs")
+
+
 ;; Display the current time
 (display-time-mode 1)
 
