@@ -33,4 +33,13 @@
   (interactive)
   (helm-find-in-dir "~/workspace/"))
 
+;; Open files as sudo
+;; This advises helm-find-files to reopen the selected file as root
+;; Based on https://emacsredux.com/blog/2013/04/21/edit-files-as-root/
+(defadvice helm-find-files (after find-file-sudo activate)
+  "Find file as root if necessary."
+  (unless (and buffer-file-name
+               (file-writable-p buffer-file-name))
+    (find-alternate-file (concat "/sudo:root@localhost:" buffer-file-name))))
+
 (provide 'init-helm)
