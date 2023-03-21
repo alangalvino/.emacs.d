@@ -1,6 +1,5 @@
 ;;;; Emacs GUI look & feel adjustments
 
-
 ;; Highlights chars in lines over whitespace-line-column siz
 (setq whitespace-style '(face lines-tail))
 
@@ -9,7 +8,6 @@
 (setq inhibit-startup-message t)
 
 (setq frame-title-format "emacs")
-
 
 ;; Display the current time
 (display-time-mode 1)
