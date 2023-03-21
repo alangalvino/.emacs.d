@@ -1,9 +1,3 @@
-(defun find-file-or-projectile ()
-  "If on projectile tries to find file with projectile if not with helm"
-  (interactive)
-  (if (projectile-project-p)
-      (call-interactively 'helm-projectile-find-file)
-    (call-interactively 'helm-find-files)))
 
 (defun kill-other-buffers ()
   "Kill all other buffers."

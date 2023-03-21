@@ -1,33 +1,35 @@
 ;;;; Org-mode configs
 
-;;; Org modules and packages
+(with-eval-after-load "org"
+  ;;; Org configs
 
-(require 'org-tempo)
+  (setq org-notes-home-dir user-orgmode-dir)
+  (setq org-startup-folded t)
+
+  ;; Fix superscripts: https://necromuralist.github.io/posts/disabling-subscripting-in-org-mode/
+  (setq org-use-sub-superscripts '{})
+
+  
+  ;;; Org modules and packages
+  
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((lisp . t)
+     (shell . t)))
+
+  (require 'org-tempo))
 
 (use-package org-bullets
   :ensure t
-  :config
-  (setq org-hide-emphasis-markers t)
-  (add-hook 'org-mode-hook (lambda()
-                             (org-bullets-mode 1))))
+  :custom
+  (org-hide-emphasis-markers t))
 
-;;; Org configs
-
-(setq org-startup-folded t)
-
-;; Fix superscripts: https://necromuralist.github.io/posts/disabling-subscripting-in-org-mode/
-(setq org-use-sub-superscripts '{})
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((lisp . t)
-   (shell . t)))
+;; Org module hook
 
 (add-hook 'org-mode-hook (lambda ()
+                           (org-bullets-mode 1)
                            (org-toggle-pretty-entities)
                            (auto-fill-mode)
                            (org-indent-mode)))
-
-(setq org-notes-home-dir user-orgmode-dir)
 
 (provide 'init-org-mode)

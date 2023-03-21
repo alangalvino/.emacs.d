@@ -82,6 +82,7 @@
    '("y" . meow-yank)
    '("p" . yank)
    '("z" . meow-pop-selection)
+   '("C-r" . helm-slime-repl-history)
    '("'" . repeat)
    '("=" . meow-indent)
    '("-" . meow-comment)
@@ -89,10 +90,12 @@
 
 (use-package meow
   :ensure t
-  :init
-  (meow-global-mode 1)
+  :bind
+  ("C-c e n" . 'meow-normal-mode)
+  ("C-c e m" . 'meow-motion-mode)
   :config
   (meow-dv-arrow-setup)
+  (meow-global-mode 1)
   :custom
   (meow-use-clipboard t)
   (meow-expand-hint-remove-delay 0)
