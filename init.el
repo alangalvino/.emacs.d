@@ -6,7 +6,7 @@
 ;;; User variables
 
 (defvar user-initfiles-directory      (expand-file-name "initfiles" user-emacs-directory))
-(defvar user-orgmode-dir             "~/Orgnotes/")
+(defvar user-orgmode-dir              "~/Orgnotes/")
 (defvar user-local-packages-directory (expand-file-name "local/packages/"  user-emacs-directory))
 
 ;;; Load initfiles, local-packages and use-package
