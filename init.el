@@ -85,16 +85,14 @@
   :ensure t
   :delight)
 
+(use-package darkroom 
+  :ensure t)
+
 (use-package company
   :ensure t
   :delight
   :config
   (add-hook 'after-init-hook 'global-company-mode))
-
-(use-package darkroom
-  :commands darkroom-mode
-  :config
-  (setq darkroom-text-scale-increase 0))
 
 (use-package init-org-mode
   :ensure nil)
@@ -102,6 +100,15 @@
 (use-package init-osx
   :ensure nil
   :if +osxp+)
+
+(use-package helpful
+  :ensure t
+  :config
+  (global-set-key (kbd "C-h f") #'helpful-callable)
+  (global-set-key (kbd "C-h v") #'helpful-variable)
+  (global-set-key (kbd "C-h k") #'helpful-key)
+  (global-set-key (kbd "C-h x") #'helpful-command)
+  (global-set-key (kbd "C-c C-d") #'helpful-at-point))
 
 (use-package init-global-keybindings
   :ensure nil)
