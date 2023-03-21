@@ -4,7 +4,7 @@
 (global-set-key (kbd "C-c _") 'split-window-vertically)
 (global-set-key (kbd "C-c -") 'split-window-vertically)
 (global-set-key (kbd "C-c |") 'split-window-horizontally)
-(global-set-key (kbd "C-c f") 'helm-find-files)
+(global-set-key (kbd "C-c f") 'find-file-or-projectile)
 (global-set-key (kbd "C-c o") 'helm-find-my-notes)
 (global-set-key (kbd "C-c w") 'helm-find-my-workspace)
 (global-set-key (kbd "C-c e n") 'meow-normal-mode)

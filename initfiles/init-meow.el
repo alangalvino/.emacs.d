@@ -79,6 +79,8 @@
    '("y" . meow-yank)
    '("z" . meow-pop-selection)
    '("'" . repeat)
+   '("=" . meow-indent)
+   '("-" . meow-comment)
    '("<escape>" . ignore)))
 
 (defun meow-dv-arrow-setup ()
@@ -87,6 +89,7 @@
   (meow-define-keys 'insert
     '("C-g" . meow-insert-exit))
   (meow-leader-define-key
+   '("U" . find-file)
    '("?" . meow-cheatsheet))
   (meow-motion-overwrite-define-key
    ;; custom keybinding for motion state
@@ -146,7 +149,6 @@
    '("O" . meow-to-block)
    '("c" . meow-prev)
    '("P" . meow-prev-expand)
-   '("q" . meow-quit)
    '("r" . meow-replace)
    '("R" . meow-swap-grab)
    '("s" . meow-search)
@@ -164,6 +166,8 @@
    '("p" . yank)
    '("z" . meow-pop-selection)
    '("'" . repeat)
+   '("=" . meow-indent)
+   '("-" . meow-comment)
    '("<escape>" . ignore)))
 
 (use-package meow
