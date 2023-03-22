@@ -36,7 +36,7 @@
 (use-package init-meow
   :ensure nil)
 
-(use-package init-common-lisp
+(use-package init-slime
   :ensure nil)
 
 (use-package init-helm
@@ -105,6 +105,9 @@
   ("C-h k" . 'helpful-key)
   ("C-h x" . 'helpful-command)
   ("C-c C-d" . 'helpful-at-point))
+
+(use-package init-vterm
+  :ensure nil)
 
 (use-package init-global-keybindings
   :ensure nil)

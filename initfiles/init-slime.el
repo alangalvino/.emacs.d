@@ -1,5 +1,7 @@
 ;;;; Common Lisp specific configs as Quicklisp and Slime
 
+(require 'slime)
+
 ;; Load Quicklisp
 (if (file-exists-p "~/.roswell/lisp/quicklisp/slime-helper.el")
     (progn
