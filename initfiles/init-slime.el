@@ -23,4 +23,4 @@
 
 (global-set-key (kbd "C-c s") 'slime)
 
-(provide 'init-common-lisp)
+(provide 'init-slime)

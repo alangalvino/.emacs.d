@@ -1,4 +1,3 @@
-
 (defun kill-other-buffers ()
   "Kill all other buffers."
   (interactive)
