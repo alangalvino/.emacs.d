@@ -8,9 +8,9 @@
   ("C-x C-f" . 'helm-find-files)
   ("C-x C-o" . 'helm-occur)
   ("C-x C-b" . 'helm-buffers-list)
-  ("C-c f" . 'helm-find-file-or-projectile)
-  ("C-c o" . 'helm-find-my-notes)
-  ("C-c w" . 'helm-find-my-workspace)
+  ("C-b f" . 'helm-find-file-or-projectile)
+  ("C-b o" . 'helm-find-my-notes)
+  ("C-b w" . 'helm-find-my-workspace)
   (:map helm-command-map
         ("C-j" . 'helm-next-line)
         ("C-k" . 'helm-previous-line))

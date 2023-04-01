@@ -6,7 +6,7 @@
 ;;; User variables
 
 (defvar user-initfiles-directory      (expand-file-name "initfiles" user-emacs-directory))
-(defvar user-local-packages-directory (expand-file-name "local/packages/"  user-emacs-directory))
+;; (defvar user-local-packages-directory (expand-file-name "local/packages/"  user-emacs-directory))
 (defvar user-orgmode-dir              "~/orgnotes/")
 (defvar user-workspace-dir            "~/workspace/")
 
@@ -14,8 +14,8 @@
 
 (setq load-path (cons user-initfiles-directory load-path))
 
-(let ((default-directory user-local-packages-directory))
-  (normal-top-level-add-subdirs-to-load-path))
+;; (let ((default-directory user-local-packages-directory))
+;;   (normal-top-level-add-subdirs-to-load-path))
 
 (require 'init-use-package)
 
@@ -33,7 +33,10 @@
 (use-package delight 
   :ensure t)
 
-(use-package init-meow
+;; (use-package init-meow
+;;   :ensure nil)
+
+(use-package init-evil
   :ensure nil)
 
 (use-package init-slime
@@ -71,7 +74,7 @@
   :delight
   :hook
   ('emacs-lisp-mode . #'aggressive-indent-mode)
-  ('lisp-mode . #'aggressive-indent-mode))
+  ('lisp-mode .       #'aggressive-indent-mode))
 
 (use-package treemacs 
   :ensure t
@@ -88,7 +91,15 @@
   :ensure t
   :delight
   :hook
-  ('after-init . 'global-company-mode))
+  ('after-init . 'global-company-mode)
+  :config
+  (define-key company-mode-map (kbd "<tab>") 'company-complete))
+
+(use-package which-key
+  :ensure t
+  :delight
+  :config
+  (which-key-mode))
 
 (use-package init-org-mode
   :ensure nil)
