@@ -1,6 +1,6 @@
 ;;;; Common Lisp specific configs as Quicklisp and Slime
 
-(require 'slime)
+;; (require 'slime)
 
 ;; Load Quicklisp
 (if (file-exists-p "~/.roswell/lisp/quicklisp/slime-helper.el")
@@ -14,9 +14,7 @@
       (setq inferior-lisp-program "/usr/bin/ros -L sbcl -Q -l ~/.sbclrc run")))
 
 (use-package helm-slime
-  :ensure t
-  :hook
-  ('slime-repl-mode . (lambda () (local-set-key (kbd "C-r") #'helm-slime-repl-history))))
+  :ensure t)
 
 (use-package slime-company
   :ensure t)

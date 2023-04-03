@@ -111,10 +111,10 @@
 (use-package helpful
   :ensure t
   :bind
-  ("C-h f" . 'helpful-callable)
-  ("C-h v" .  'helpful-variable)
-  ("C-h k" . 'helpful-key)
-  ("C-h x" . 'helpful-command)
+  ("C-x h f" . 'helpful-callable)
+  ("C-x h v" . 'helpful-variable)
+  ("C-x h k" . 'helpful-key)
+  ("C-x h c" . 'helpful-command)
   ("C-c C-d" . 'helpful-at-point))
 
 (use-package init-vterm

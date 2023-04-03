@@ -9,24 +9,54 @@
   :ensure t
   :init
   (setq evil-want-keybinding nil)
+  :hook
+  ('slime-repl-mode . (lambda ()
+                        (define-key evil-normal-state-map (kbd "C-r") 'helm-slime-repl-history)
+                        (define-key evil-normal-state-map (kbd "C-m") 'slime-repl-return)
+                        (define-key evil-normal-state-map (kbd "M-.") 'slime-edit-definition)))
   :config
   (evil-mode t)
+  
+  ;; Repeat search with 'S' and 's'
+  (define-key evil-normal-state-map "s" 'evil-search-next)
+  (define-key evil-normal-state-map "S" 'evil-search-backward)
+
+  ;; to the last non-blank character of a line with 'L' and 'N'
+  (define-key evil-motion-state-map "L" 'evil-last-non-blank)
+  (define-key evil-visual-state-map "L" 'evil-last-non-blank)
+  (define-key evil-motion-state-map "N" 'evil-last-non-blank)
+  (define-key evil-visual-state-map "N" 'evil-last-non-blank)
+
+  ;; to the beginning of line with 'H'
+  (define-key evil-motion-state-map "H" 'beginning-of-line-text)
+  (define-key evil-visual-state-map "H" 'beginning-of-line-text)
+
+  ;; remap change word to 'C' (capital 'c')
   (define-key evil-visual-state-map "c" 'evil-change)
   (define-key evil-normal-state-map "C" 'evil-change)
+  
+  ;; remap movement keys to htcn (dvorak)
   (define-key evil-normal-state-map "c" 'evil-previous-line)
   (define-key evil-visual-state-map "t" 'evil-next-line)
   (define-key evil-normal-state-map "t" 'evil-next-line)
   (define-key evil-visual-state-map "n" 'evil-forward-char)
   (define-key evil-normal-state-map "n" 'evil-forward-char)
+  
+  ;;  Ctrl + g as ESC
   (define-key evil-insert-state-map (kbd "C-g") 'evil-normal-state)
-  (define-key evil-insert-state-map (kbd "C-d") 'backward-delete-char)
+
+  ;; Ctrl + y as yank
+  (define-key evil-insert-state-map (kbd "C-y") 'yank)
+  (define-key evil-motion-state-map (kbd "C-y") 'yank)
+  (define-key evil-visual-state-map (kbd "C-y") 'yank)
+
+  ;; Ctrl + h as delete backward char
+  (define-key evil-insert-state-map (kbd "C-h") 'evil-delete-backward-char)
+  (define-key evil-motion-state-map (kbd "C-h") 'evil-delete-backward-char)
+  (define-key evil-visual-state-map (kbd "C-h") 'evil-delete-backward-char)
+
   (define-key evil-normal-state-map "-" 'comment-line)
-  (define-key evil-visual-state-map "-" 'comment-region)
-  (define-key evil-normal-state-map (kbd "C-m") 'slime-repl-return)
-  (define-key evil-normal-state-map (kbd "C-r") 'helm-slime-repl-history)
-  (define-key evil-motion-state-map "H" 'beginning-of-line-text)
-  (define-key evil-motion-state-map "L" 'evil-end-of-line)
-  (define-key evil-normal-state-map (kbd "M-.") 'slime-edit-definition))
+  (define-key evil-visual-state-map "-" 'comment-region))
 
 (use-package evil-leader
   :ensure t
@@ -39,26 +69,25 @@
     ":"     'helm-M-x
     "<SPC>" 'helm-M-x
     ;; f for files
-    "f f"   'helm-find-file-or-projectile
-    "f n"   'helm-find-my-notes
-    "f w"   'helm-find-my-workspace
+    "f"   'helm-find-file-or-projectile
+    "n"   'helm-find-my-notes
+    "w"   'helm-find-my-workspace
     ;; b for buffers
-    "b l"   'helm-buffers-list
+    "b"   'helm-buffers-list
     ;; g for git
-    "g s"   'magit-status
+    "g"   'magit-status
     ;; w for word
-    "w f"   'helm-occur
-    "x o"   'other-window
+    "/"   'helm-occur
     ;; t for terminal
-    "t"     'vterm-toggle
+    "t"   'vterm-toggle
     ;; d for dired 
-    "d"     'treemacs
+    "d"   'treemacs
     ;; s for slime
-    "s l"   'slime
+    "s"   'slime
     ;; random
-    "F"     'toggle-frame-fullscreen
-    "|"     'split-window-horizontally
-    "_"     'split-window-vertically))
+    "F"   'toggle-frame-fullscreen
+    "|"   'split-window-horizontally
+    "_"   'split-window-vertically))
 
 (use-package evil-collection
   :after evil
